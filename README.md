@@ -300,6 +300,8 @@ That's all for now! Make sure to check out the `playground` inside the `src` [fo
 
 No. It's not possible to define a hotkey multiple times. Each hotkey has a description and a group, so it doesn't make sense assigning a hotkey to different actions.
 
+In case of registering duplicated hotkeys, the `addShortcut` and `addSequenceShortcut` methods return an `EMPTY` observable, allowing to detect duplicated hotkeys registration and execute custom logic.
+
 **Why am I not receiving any event?**
 
 If you've added a hotkey to a particular element of your DOM, make sure it's focusable. Otherwise, hotkeys cannot capture any keyboard event.

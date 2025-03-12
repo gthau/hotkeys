@@ -137,7 +137,7 @@ export class HotkeysService {
 
         if (sequenceSummary.hotkeyMap.has(normalizedKeys)) {
           console.error('Duplicated shortcut');
-          return of(null);
+          return EMPTY;
         }
 
         sequenceSummary.hotkeyMap.set(normalizedKeys, hotkeySummary);
@@ -170,7 +170,7 @@ export class HotkeysService {
 
     if (this.hotkeys.has(normalizedKeys)) {
       console.error('Duplicated shortcut');
-      return of(null);
+      return EMPTY;
     }
 
     this.hotkeys.set(normalizedKeys, mergedOptions);

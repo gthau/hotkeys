@@ -27,6 +27,30 @@ describe('Service: Hotkeys', () => {
     expect(spectator.service.getHotkeys().length).toBe(0);
   });
 
+  it('should not emit after registering duplicated shortcuts', () => {
+    const spyFcn = createSpy('subscribe', (...args) => {});
+    spectator.service.addShortcut({ keys: 'a' }).subscribe(spyFcn);
+    spectator.service.addShortcut({ keys: 'a' }).subscribe(spyFcn);
+    spectator.service.addSequenceShortcut({ keys: 'g>a' }).subscribe(spyFcn);
+    spectator.service.addSequenceShortcut({ keys: 'g>a' }).subscribe(spyFcn);
+
+    expect(spyFcn).not.toHaveBeenCalled();
+  });
+
+  it('should emit once per event matching shortcut even if duplicated shortcuts registration was attempted', () => {
+    const spyFcn = createSpy('subscribe', (...args) => {});
+    spectator.service.addShortcut({ keys: 'a' }).subscribe(spyFcn);
+    spectator.service.addShortcut({ keys: 'a' }).subscribe(spyFcn);
+    spectator.service.addSequenceShortcut({ keys: 'g>a' }).subscribe(spyFcn);
+    spectator.service.addSequenceShortcut({ keys: 'g>a' }).subscribe(spyFcn);
+
+    fakeKeyboardPress('a');
+    expect(spyFcn).toHaveBeenCalledTimes(1);
+
+    fakeBodyKeyboardSequencePress(['g', 'a']);
+    expect(spyFcn).toHaveBeenCalledTimes(1);
+  });
+
   it('should unsubscribe shortcuts when removed', () => {
     const subscription = spectator.service.addShortcut({ keys: 'meta.a' }).subscribe();
     spectator.service.removeShortcuts('meta.a');
